@@ -1,0 +1,2 @@
+Model,Features,Accuracy,Precision,Recall,Specificity,F1,ROC-AUC
+XGBoost_7_Features,"age, bun, systolic_bp, glucose, diabetes, uric_acid, waist",0.8591317799477908,0.6881851400730816,0.3199320498301246,0.9701527340561968,0.43679938152299963,0.8061621780497263

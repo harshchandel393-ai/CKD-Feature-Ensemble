@@ -1,0 +1,2 @@
+Model,Features,Accuracy,Precision,Recall,Specificity,F1,ROC-AUC
+XGBoost_5_Features,"age, bun, systolic_bp, glucose, diabetes",0.8583583099680944,0.680672268907563,0.3210645526613817,0.968986825230267,0.4363216621777607,0.8003031891105437
