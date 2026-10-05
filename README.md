@@ -1,6 +1,6 @@
 # A Feature-Selection-Driven Ensemble Learning Framework for Early Prediction of Chronic Kidney Disease
 
-Final-year B.Tech CSE (AI & ML) project. It builds a CKD classification pipeline on NHANES 1999–2018 data, compares feature-selection methods and several classifiers, checks the results with repeated cross-validation, explains the model with SHAP, and serves a 10-feature XGBoost model through a small Flask app.
+It builds a CKD classification pipeline on NHANES 1999–2018 data, compares feature-selection methods and several classifiers, checks the results with repeated cross-validation, explains the model with SHAP, and serves a 10-feature XGBoost model through a small Flask app.
 
 NHANES is a cross-sectional survey, so the models here classify whether a participant meets the CKD definition used in this project at the time of examination. They do not predict future CKD onset or progression. "Early prediction" in the title should be read as early identification from routine measurements.
 
