@@ -1,676 +1,279 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>CKD Risk Assessment</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
-
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='style.css') }}"
-    >
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CKD Risk Assessment</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
-
 <body>
 
-<div class="bg-orbs" aria-hidden="true">
-    <span class="orb orb-1"></span>
-    <span class="orb orb-2"></span>
-    <span class="orb orb-3"></span>
-</div>
+  <!-- ===================== HEADER ===================== -->
+  <header class="app-header">
+    <div class="container header-inner">
 
-
-<header class="site-header">
-
-    <div class="brand">
-
+      <div class="brand">
         <div class="brand-mark" aria-hidden="true">
-            <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-                <path d="M12 2C8 6 6 10 6 14a6 6 0 0 0 12 0c0-4-2-8-6-12Z"/>
-                <path d="M9 15c.5 1.2 1.6 2 3 2"/>
-            </svg>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
+               stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3c-3.5 0-6 2.8-6 6.5 0 4.5 4 9.5 6 11.5 2-2 6-7 6-11.5C18 5.8 15.5 3 12 3z"/>
+            <path d="M9 10h2l1-2 1 4 1-2h1"/>
+          </svg>
         </div>
-
         <div class="brand-text">
-            <h1>CKD Risk Assessment</h1>
-            <p>Machine Learning Based Chronic Kidney Disease Classification</p>
+          <h1 class="app-title">CKD Risk Assessment</h1>
+          <p class="app-subtitle">Machine Learning Based Chronic Kidney Disease Classification</p>
         </div>
+      </div>
+
+      <div class="header-meta">
+        <span class="meta-badge meta-badge-accent">XGBoost Model</span>
+      </div>
 
     </div>
+  </header>
 
+  <!-- ===================== MAIN ===================== -->
+  <main class="container main-grid">
 
-    <div class="header-meta">
-        <span class="pill">NHANES 1999–2018</span>
-        <span class="pill pill-accent">XGBoost Model</span>
-    </div>
+    <!-- ---------- LEFT PANEL: PATIENT PARAMETERS ---------- -->
+    <section class="panel panel-form" aria-labelledby="params-heading">
+      <div class="panel-head">
+        <span class="panel-accent" aria-hidden="true"></span>
+        <div>
+          <h2 id="params-heading" class="panel-title">Patient Parameters</h2>
+          <p class="panel-desc">Enter the required clinical parameters to estimate CKD classification.</p>
+        </div>
+      </div>
 
-</header>
+      <form method="POST" novalidate class="ckd-form" id="ckdForm">
 
+        <div class="form-grid">
 
-<main class="layout">
+          <!-- Age -->
+          <div class="field">
+            <label for="age">Age <span class="unit">years</span></label>
+            <input type="number" step="any" id="age" name="age" placeholder="e.g. 55" required />
+            <small class="hint">Range: 18 &ndash; 90</small>
+          </div>
 
+          <!-- BMI -->
+          <div class="field">
+            <label for="bmi">BMI <span class="unit">kg/m&sup2;</span></label>
+            <input type="number" step="any" id="bmi" name="bmi" placeholder="e.g. 27.4" required />
+            <small class="hint">Range: 10 &ndash; 60</small>
+          </div>
 
-    <!-- FORM PANEL -->
+          <!-- Waist -->
+          <div class="field">
+            <label for="waist">Waist Circumference <span class="unit">cm</span></label>
+            <input type="number" step="any" id="waist" name="waist" placeholder="e.g. 92" required />
+            <small class="hint">Range: 40 &ndash; 200</small>
+          </div>
 
-    <section class="card form-card">
+          <!-- Diabetes -->
+          <div class="field">
+            <label for="diabetes">Diabetes <span class="unit">0 / 1</span></label>
+            <select id="diabetes" name="diabetes" required>
+              <option value="" disabled selected>Select</option>
+              <option value="0">0 &ndash; No</option>
+              <option value="1">1 &ndash; Yes</option>
+            </select>
+            <small class="hint">0 = No, 1 = Yes</small>
+          </div>
 
-        <div class="card-head">
-            <h2>Patient Parameters</h2>
-            <p>Enter the 10 clinical features below to estimate CKD risk.</p>
+          <!-- Systolic BP -->
+          <div class="field">
+            <label for="systolic_bp">Systolic Blood Pressure <span class="unit">mmHg</span></label>
+            <input type="number" step="any" id="systolic_bp" name="systolic_bp" placeholder="e.g. 128" required />
+            <small class="hint">Range: 70 &ndash; 250</small>
+          </div>
+
+          <!-- BUN -->
+          <div class="field">
+            <label for="bun">Blood Urea Nitrogen <span class="unit">mg/dL</span></label>
+            <input type="number" step="any" id="bun" name="bun" placeholder="e.g. 15" required />
+            <small class="hint">Range: 1 &ndash; 100</small>
+          </div>
+
+          <!-- Glucose -->
+          <div class="field">
+            <label for="glucose">Glucose <span class="unit">mg/dL</span></label>
+            <input type="number" step="any" id="glucose" name="glucose" placeholder="e.g. 98" required />
+            <small class="hint">Range: 40 &ndash; 500</small>
+          </div>
+
+          <!-- Uric Acid -->
+          <div class="field">
+            <label for="uric_acid">Uric Acid <span class="unit">mg/dL</span></label>
+            <input type="number" step="any" id="uric_acid" name="uric_acid" placeholder="e.g. 5.2" required />
+            <small class="hint">Range: 1 &ndash; 15</small>
+          </div>
+
+          <!-- Albumin -->
+          <div class="field">
+            <label for="albumin">Albumin <span class="unit">g/dL</span></label>
+            <input type="number" step="any" id="albumin" name="albumin" placeholder="e.g. 4.2" required />
+            <small class="hint">Range: 1 &ndash; 6</small>
+          </div>
+
+          <!-- Total Cholesterol -->
+          <div class="field">
+            <label for="total_cholesterol">Total Cholesterol <span class="unit">mg/dL</span></label>
+            <input type="number" step="any" id="total_cholesterol" name="total_cholesterol" placeholder="e.g. 185" required />
+            <small class="hint">Range: 50 &ndash; 500</small>
+          </div>
+
         </div>
 
-
-        <form id="ckd-form" method="POST" novalidate>
-
-            <div class="grid">
-
-
-                <!-- AGE -->
-
-                <div class="field">
-
-                    <label for="age">
-                        Age
-                        <span class="unit">years</span>
-                    </label>
-
-                    <div class="input-wrap">
-
-                        <input
-                            type="number"
-                            id="age"
-                            name="age"
-                            min="20"
-                            max="100"
-                            step="1"
-                            placeholder="e.g. 55"
-                            required
-                        >
-
-                    </div>
-
-                    <span class="hint">Range: 20 – 100</span>
-
-                </div>
-
-
-                <!-- BMI -->
-
-                <div class="field">
-
-                    <label for="bmi">
-                        BMI
-                        <span class="unit">kg/m²</span>
-                    </label>
-
-                    <div class="input-wrap">
-
-                        <input
-                            type="number"
-                            id="bmi"
-                            name="bmi"
-                            min="15"
-                            max="50"
-                            step="0.1"
-                            placeholder="e.g. 27.4"
-                            required
-                        >
-
-                    </div>
-
-                    <span class="hint">Range: 15 – 50</span>
-
-                </div>
-
-
-                <!-- WAIST -->
-
-                <div class="field">
-
-                    <label for="waist">
-                        Waist Circumference
-                        <span class="unit">cm</span>
-                    </label>
-
-                    <div class="input-wrap">
-
-                        <input
-                            type="number"
-                            id="waist"
-                            name="waist"
-                            min="50"
-                            max="150"
-                            step="0.1"
-                            placeholder="e.g. 92"
-                            required
-                        >
-
-                    </div>
-
-                    <span class="hint">Range: 50 – 150</span>
-
-                </div>
-
-
-                <!-- DIABETES -->
-
-                <div class="field">
-
-                    <label for="diabetes">
-                        Diabetes
-                    </label>
-
-                    <div class="input-wrap select-wrap">
-
-                        <select
-                            id="diabetes"
-                            name="diabetes"
-                            required
-                        >
-
-                            <option value="" disabled selected>
-                                Select...
-                            </option>
-
-                            <option value="0">
-                                No
-                            </option>
-
-                            <option value="1">
-                                Yes
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                    <span class="hint">Select Yes or No</span>
-
-                </div>
-
-
-                <!-- SYSTOLIC BP -->
-
-                <div class="field">
-
-                    <label for="systolic_bp">
-                        Systolic Blood Pressure
-                        <span class="unit">mmHg</span>
-                    </label>
-
-                    <div class="input-wrap">
-
-                        <input
-                            type="number"
-                            id="systolic_bp"
-                            name="systolic_bp"
-                            min="80"
-                            max="220"
-                            step="1"
-                            placeholder="e.g. 128"
-                            required
-                        >
-
-                    </div>
-
-                    <span class="hint">Range: 80 – 220</span>
-
-                </div>
-
-
-                <!-- BUN -->
-
-                <div class="field">
-
-                    <label for="bun">
-                        Blood Urea Nitrogen
-                        <span class="unit">mg/dL</span>
-                    </label>
-
-                    <div class="input-wrap">
-
-                        <input
-                            type="number"
-                            id="bun"
-                            name="bun"
-                            min="5"
-                            max="100"
-                            step="0.1"
-                            placeholder="e.g. 15"
-                            required
-                        >
-
-                    </div>
-
-                    <span class="hint">Range: 5 – 100</span>
-
-                </div>
-
-
-                <!-- GLUCOSE -->
-
-                <div class="field">
-
-                    <label for="glucose">
-                        Glucose
-                        <span class="unit">mg/dL</span>
-                    </label>
-
-                    <div class="input-wrap">
-
-                        <input
-                            type="number"
-                            id="glucose"
-                            name="glucose"
-                            min="50"
-                            max="500"
-                            step="0.1"
-                            placeholder="e.g. 98"
-                            required
-                        >
-
-                    </div>
-
-                    <span class="hint">Range: 50 – 500</span>
-
-                </div>
-
-
-                <!-- URIC ACID -->
-
-                <div class="field">
-
-                    <label for="uric_acid">
-                        Uric Acid
-                        <span class="unit">mg/dL</span>
-                    </label>
-
-                    <div class="input-wrap">
-
-                        <input
-                            type="number"
-                            id="uric_acid"
-                            name="uric_acid"
-                            min="2"
-                            max="15"
-                            step="0.1"
-                            placeholder="e.g. 5.2"
-                            required
-                        >
-
-                    </div>
-
-                    <span class="hint">Range: 2 – 15</span>
-
-                </div>
-
-
-                <!-- ALBUMIN -->
-
-                <div class="field">
-
-                    <label for="albumin">
-                        Albumin
-                        <span class="unit">g/dL</span>
-                    </label>
-
-                    <div class="input-wrap">
-
-                        <input
-                            type="number"
-                            id="albumin"
-                            name="albumin"
-                            min="2"
-                            max="6"
-                            step="0.1"
-                            placeholder="e.g. 4.2"
-                            required
-                        >
-
-                    </div>
-
-                    <span class="hint">Range: 2 – 6</span>
-
-                </div>
-
-
-                <!-- TOTAL CHOLESTEROL -->
-
-                <div class="field">
-
-                    <label for="total_cholesterol">
-                        Total Cholesterol
-                        <span class="unit">mg/dL</span>
-                    </label>
-
-                    <div class="input-wrap">
-
-                        <input
-                            type="number"
-                            id="total_cholesterol"
-                            name="total_cholesterol"
-                            min="80"
-                            max="400"
-                            step="0.1"
-                            placeholder="e.g. 185"
-                            required
-                        >
-
-                    </div>
-
-                    <span class="hint">Range: 80 – 400</span>
-
-                </div>
-
-            </div>
-
-
-            <div class="actions">
-
-                <button
-                    type="reset"
-                    class="btn btn-ghost"
-                >
-                    Reset
-                </button>
-
-
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                >
-
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                    >
-                        <path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/>
-                    </svg>
-
-                    Assess Risk
-
-                </button>
-
-            </div>
-
-        </form>
-
+        <!-- Error message -->
+        {% if error %}
+          <div class="alert alert-error" id="formError" role="alert">{{ error }}</div>
+        {% endif %}
+
+        <!-- Buttons -->
+        <div class="form-actions">
+          <button type="button" id="resetBtn" class="btn btn-secondary">Reset</button>
+          <button type="submit" class="btn btn-primary">Assess Risk</button>
+        </div>
+
+      </form>
     </section>
 
-
-
-    <!-- RESULT PANEL -->
-
-    <aside class="card result-card" id="result-card">
-
-        <div class="card-head">
-
-            <h2>Assessment Result</h2>
-
-            <p>
-                Model output will appear here.
-            </p>
-
+    <!-- ---------- RIGHT PANEL: ASSESSMENT RESULT ---------- -->
+    <section class="panel panel-result" aria-labelledby="result-heading">
+      <div class="panel-head">
+        <span class="panel-accent" aria-hidden="true"></span>
+        <div>
+          <h2 id="result-heading" class="panel-title">Assessment Result</h2>
+          <p class="panel-desc">Prediction output for the submitted clinical parameters.</p>
         </div>
+      </div>
 
+      <div class="result-body" id="resultBody">
 
         {% if result %}
 
-        <div class="result-body">
-
-
-            {% if result == "CKD Detected" %}
-
-            <div class="risk-badge risk-high">
-
-                <span class="risk-dot"></span>
-
-                CKD Detected
-
+          {% if result == "CKD Detected" %}
+            <div class="status status-danger" id="resultStatus">
+              <span class="status-dot"></span>
+              <span class="status-text">CKD Detected</span>
             </div>
-
-            {% else %}
-
-            <div class="risk-badge risk-low">
-
-                <span class="risk-dot"></span>
-
-                No CKD Detected
-
+            <div class="probability-block" id="probBlock">
+              <div class="probability-row">
+                <span class="probability-label">Model Probability</span>
+                <span class="probability-value">{{ probability }}%</span>
+              </div>
+              <div class="progress-track" aria-hidden="true">
+                <div class="progress-fill progress-danger" style="width: {{ probability }}%;"></div>
+              </div>
             </div>
-
-            {% endif %}
-
-
-
-            {% if probability is not none %}
-
-            <div class="prob">
-
-                <div class="prob-label">
-
-                    <span>
-                        Model Probability
-                    </span>
-
-                    <strong>
-                        {{ probability }}%
-                    </strong>
-
-                </div>
-
-
-                <div class="prob-bar">
-
-                    <div
-                        class="prob-fill"
-                        style="width: {{ probability }}%"
-                    ></div>
-
-                </div>
-
-            </div>
-
-            {% endif %}
-
-
-
-            {% if result == "CKD Detected" %}
-
-            <p class="disclaimer">
-                The model classified this input as CKD-positive.
-                This result is for research/educational use and is not a medical diagnosis.
+            <p class="result-disclaimer">
+              The model classified this input as CKD-positive. This result is for research/educational use and is not a medical diagnosis.
             </p>
-
-            {% else %}
-
-            <p class="disclaimer">
-                The model classified this input as CKD-negative.
-                This result is for research/educational use and is not a medical diagnosis.
+          {% else %}
+            <div class="status status-success" id="resultStatus">
+              <span class="status-dot"></span>
+              <span class="status-text">No CKD Detected</span>
+            </div>
+            <div class="probability-block" id="probBlock">
+              <div class="probability-row">
+                <span class="probability-label">Model Probability</span>
+                <span class="probability-value">{{ probability }}%</span>
+              </div>
+              <div class="progress-track" aria-hidden="true">
+                <div class="progress-fill progress-success" style="width: {{ probability }}%;"></div>
+              </div>
+            </div>
+            <p class="result-disclaimer">
+              The model classified this input as CKD-negative. This result is for research/educational use and is not a medical diagnosis.
             </p>
-
-            {% endif %}
-
-
-        </div>
-
+          {% endif %}
 
         {% else %}
 
-
-        <div class="result-empty">
-
-            <div
-                class="empty-icon"
-                aria-hidden="true"
-            >
-
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
-
-                    <path d="M3 12h3l2-6 4 12 3-8 2 4h4"/>
-
-                </svg>
-
+          <div class="result-empty" id="resultEmpty">
+            <div class="empty-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="none"
+                   stroke="currentColor" stroke-width="1.6"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="16" rx="2"/>
+                <path d="M7 14l3-3 3 3 4-4"/>
+              </svg>
             </div>
-
-
-            <p>
-                Fill in the patient parameters and click
-                <strong>Assess Risk</strong>
-                to view the model's estimate.
-            </p>
-
-        </div>
-
+            <p>Model output will appear here.</p>
+          </div>
 
         {% endif %}
 
+      </div>
+    </section>
 
+  </main>
 
-        <div class="legend">
+  <!-- ===================== FEATURE REFERENCE ===================== -->
+  <section class="container reference-section" aria-labelledby="ref-heading">
+    <h2 id="ref-heading" class="section-title">Feature Reference</h2>
 
-            <h3>
-                Feature Reference
-            </h3>
+    <div class="reference-table">
+      <div class="ref-row ref-head">
+        <span>Feature</span>
+        <span>Unit</span>
+      </div>
+      <div class="ref-row"><span>Age</span><span>years</span></div>
+      <div class="ref-row"><span>BMI</span><span>kg/m&sup2;</span></div>
+      <div class="ref-row"><span>Waist</span><span>cm</span></div>
+      <div class="ref-row"><span>Diabetes</span><span>0 / 1</span></div>
+      <div class="ref-row"><span>Systolic BP</span><span>mmHg</span></div>
+      <div class="ref-row"><span>BUN</span><span>mg/dL</span></div>
+      <div class="ref-row"><span>Glucose</span><span>mg/dL</span></div>
+      <div class="ref-row"><span>Uric Acid</span><span>mg/dL</span></div>
+      <div class="ref-row"><span>Albumin</span><span>g/dL</span></div>
+      <div class="ref-row"><span>Total Cholesterol</span><span>mg/dL</span></div>
+    </div>
+  </section>
 
-
-            <ul>
-
-                <li>
-                    <span>Age</span>
-                    <em>years</em>
-                </li>
-
-                <li>
-                    <span>BMI</span>
-                    <em>kg/m²</em>
-                </li>
-
-                <li>
-                    <span>Waist</span>
-                    <em>cm</em>
-                </li>
-
-                <li>
-                    <span>Diabetes</span>
-                    <em>0 / 1</em>
-                </li>
-
-                <li>
-                    <span>Systolic BP</span>
-                    <em>mmHg</em>
-                </li>
-
-                <li>
-                    <span>BUN</span>
-                    <em>mg/dL</em>
-                </li>
-
-                <li>
-                    <span>Glucose</span>
-                    <em>mg/dL</em>
-                </li>
-
-                <li>
-                    <span>Uric Acid</span>
-                    <em>mg/dL</em>
-                </li>
-
-                <li>
-                    <span>Albumin</span>
-                    <em>g/dL</em>
-                </li>
-
-                <li>
-                    <span>Total Chol.</span>
-                    <em>mg/dL</em>
-                </li>
-
-            </ul>
-
-        </div>
-
-    </aside>
-
-</main>
-
-
-
-<footer class="site-footer">
-
-    <p>
-        © 2026 CKD Risk Assessment · Trained on NHANES 1999–2018 · For research & educational use only.
+  <!-- ===================== DISCLAIMER ===================== -->
+  <footer class="container app-footer">
+    <p class="disclaimer">
+      This model is intended for research and educational use only and is not a medical diagnosis.
     </p>
+  </footer>
 
-</footer>
+  <!-- ===================== RESET HANDLER ===================== -->
+  <script>
+    (function () {
+      var form = document.getElementById('ckdForm');
+      var resetBtn = document.getElementById('resetBtn');
+      var resultBody = document.getElementById('resultBody');
 
+      if (!form || !resetBtn || !resultBody) return;
 
+      resetBtn.addEventListener('click', function () {
+        // 1. Clear all form inputs
+        form.reset();
 
-<script>
+        // 2. Remove any error alert
+        var errorEl = document.getElementById('formError');
+        if (errorEl) errorEl.remove();
 
-const form = document.getElementById("ckd-form");
-
-if (form) {
-
-    form.addEventListener("submit", function (e) {
-
-        const invalid = form.querySelector(":invalid");
-
-        if (invalid) {
-
-            e.preventDefault();
-
-            invalid.focus();
-
-            const field = invalid.closest(".field");
-
-            if (field) {
-
-                field.classList.add("shake");
-
-                setTimeout(function () {
-                    field.classList.remove("shake");
-                }, 500);
-
-            }
-
-        }
-
-    });
-
-}
-
-</script>
-
+        // 3. Restore the result panel to its initial empty state
+        resultBody.innerHTML =
+          '<div class="result-empty" id="resultEmpty">' +
+            '<div class="empty-icon" aria-hidden="true">' +
+              '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" ' +
+                   'stroke="currentColor" stroke-width="1.6" ' +
+                   'stroke-linecap="round" stroke-linejoin="round">' +
+                '<rect x="3" y="4" width="18" height="16" rx="2"/>' +
+                '<path d="M7 14l3-3 3 3 4-4"/>' +
+              '</svg>' +
+            '</div>' +
+            '<p>Model output will appear here.</p>' +
+          '</div>';
+      });
+    })();
+  </script>
 
 </body>
 </html>
